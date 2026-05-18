@@ -365,15 +365,13 @@ function AtmosphericParticles({ count, depth, colorStart, colorEnd, scrollYProgr
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
+          args={[positions, 3]}
           count={count}
-          array={positions}
-          itemSize={3}
         />
         <bufferAttribute
           attach="attributes-color"
+          args={[colors, 3]}
           count={count}
-          array={colors}
-          itemSize={3}
         />
       </bufferGeometry>
       <pointsMaterial
@@ -427,7 +425,7 @@ function DynamicEffects({ scrollYProgress }: { scrollYProgress: any }) {
   });
 
   return (
-    <EffectComposer disableNormalPass multisampling={0}>
+    <EffectComposer enableNormalPass={false} multisampling={0}>
       <Bloom 
         ref={bloomRef}
         luminanceThreshold={0.4}
