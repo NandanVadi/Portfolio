@@ -26,7 +26,7 @@ export function Contact() {
             Initiate <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-400">Connection</span>
           </h2>
           <p className="text-muted-foreground text-xl max-w-2xl mx-auto font-light font-[family-name:var(--font-inter)] leading-relaxed">
-            Open to select freelance collaborations. Whether it's AI integration or a modern web experience, let's build something extraordinary.
+            {"Open to select freelance collaborations. Whether it's AI integration or a modern web experience, let's build something extraordinary."}
           </p>
         </motion.div>
 
@@ -83,7 +83,6 @@ export function Contact() {
             <div className="space-y-3">
               <label className="text-sm font-medium text-muted-foreground pl-1 uppercase tracking-widest font-mono">Name</label>
               <Input 
-                placeholder="John Doe" 
                 className="bg-background/80 border-white/10 focus-visible:ring-primary focus-visible:border-primary transition-all h-14 text-lg rounded-xl" 
               />
             </div>
@@ -91,14 +90,12 @@ export function Contact() {
               <label className="text-sm font-medium text-muted-foreground pl-1 uppercase tracking-widest font-mono">Email</label>
               <Input 
                 type="email" 
-                placeholder="john@example.com" 
                 className="bg-background/80 border-white/10 focus-visible:ring-primary focus-visible:border-primary transition-all h-14 text-lg rounded-xl" 
               />
             </div>
             <div className="space-y-3">
               <label className="text-sm font-medium text-muted-foreground pl-1 uppercase tracking-widest font-mono">Message</label>
               <Textarea 
-                placeholder="Tell me about your project..." 
                 className="bg-background/80 border-white/10 focus-visible:ring-primary focus-visible:border-primary transition-all min-h-[160px] text-lg rounded-xl resize-none" 
               />
             </div>
