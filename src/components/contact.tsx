@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -7,6 +8,34 @@ import { Button } from "./ui/button";
 import { Send, Mail, MapPin } from "lucide-react";
 
 export function Contact() {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
+
   return (
     <section className="py-32 relative">
       <div className="max-w-5xl mx-auto px-6">
@@ -78,11 +107,14 @@ export function Contact() {
             viewport={{ once: true }}
             transition={{ delay: 0.4, duration: 0.8 }}
             className="glass-panel p-10 rounded-[2rem] border-white/5 hover:border-primary/30 transition-colors duration-500 flex flex-col gap-8 relative"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
           >
             <div className="space-y-3">
               <label className="text-sm font-medium text-muted-foreground pl-1 uppercase tracking-widest font-mono">Name</label>
               <Input 
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                required
                 className="bg-background/80 border-white/10 focus-visible:ring-primary focus-visible:border-primary transition-all h-14 text-lg rounded-xl" 
               />
             </div>
@@ -90,19 +122,35 @@ export function Contact() {
               <label className="text-sm font-medium text-muted-foreground pl-1 uppercase tracking-widest font-mono">Email</label>
               <Input 
                 type="email" 
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                required
                 className="bg-background/80 border-white/10 focus-visible:ring-primary focus-visible:border-primary transition-all h-14 text-lg rounded-xl" 
               />
             </div>
             <div className="space-y-3">
               <label className="text-sm font-medium text-muted-foreground pl-1 uppercase tracking-widest font-mono">Message</label>
               <Textarea 
+                value={formData.message}
+                onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                required
                 className="bg-background/80 border-white/10 focus-visible:ring-primary focus-visible:border-primary transition-all min-h-[160px] text-lg rounded-xl resize-none" 
               />
             </div>
-            <Button className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground box-glow group mt-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02]">
-              Send Transmission
-              <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            <Button 
+              type="submit"
+              disabled={status === "loading"}
+              className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground box-glow group mt-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {status === "loading" ? "Transmitting..." : status === "success" ? "Transmission Sent!" : "Send Transmission"}
+              {status === "idle" && <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />}
             </Button>
+            {status === "success" && (
+              <p className="text-emerald-400 text-center text-sm font-medium mt-[-1rem]">Message sent successfully!</p>
+            )}
+            {status === "error" && (
+              <p className="text-red-400 text-center text-sm font-medium mt-[-1rem]">Failed to send message. Please try again.</p>
+            )}
           </motion.form>
         </div>
       </div>
